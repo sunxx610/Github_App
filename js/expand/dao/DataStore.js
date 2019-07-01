@@ -1,17 +1,15 @@
 import {AsyncStorage} from 'react-native'
-import Trending from 'GitHubTrending'
+export const FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending'};
 
 /*identify get data for popular or trending page*/
-export const FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending'};
 export default class DataStore {
   /*
   * get Data main function
   * get local data first. if no data, fetch data from net
   * @param url
-  * @param flag
   * @returns {Promise}
   * */
-  fetchData(url, flag) {
+  fetchData(url) {
     return new Promise((resolve, reject) => {
       this.fetchLocalData(url)
         .then(wrapData => {
@@ -19,7 +17,7 @@ export default class DataStore {
             resolve(wrapData)
           }
           else {
-            this.fetchNetData(url, flag)
+            this.fetchNetData(url)
               .then(data => {
                 resolve(this._wrapData(data))
               }).catch(error => {
@@ -28,7 +26,7 @@ export default class DataStore {
           }
         })
         .catch(error => {
-          this.fetchNetData(url, flag)
+          this.fetchNetData(url)
             .then(data => {
               resolve(this._wrapData(data))
             })
@@ -66,11 +64,9 @@ export default class DataStore {
   /*
   * get Net Data
   * @param url
-  * @param flag
   * @returns {Promise}
   * */
-  fetchNetData(url, flag) {
-    if (flag !== FLAG_STORAGE.flag_trending) {
+  fetchNetData(url) {
       return new Promise((resolve, reject) => {
         fetch(url)
           .then(response => {
@@ -87,19 +83,6 @@ export default class DataStore {
             reject(error)
           })
       })
-    } else {
-      new Trending().fetchTrending(url)
-        .then(items => {
-          if (!items) {
-            throw new Error('No data response.');
-          }
-          this.saveData(url, items);
-          resolve(items);
-        })
-        .catch(error => {
-          reject(error)
-        })
-    }
   }
 
 

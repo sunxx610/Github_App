@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import {createBottomTabNavigator} from 'react-navigation'
-import {createAppContainer} from 'react-navigation'
+import {createBottomTabNavigator,createAppContainer} from 'react-navigation'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import {BottomTabBar} from 'react-navigation-tabs'
 import {connect} from 'react-redux'
-import {DeviceInfo} from 'react-native'
+import EventBus from 'react-native-event-bus'
 
 import PopularPage from '../page/PopularPage'
 import TrendingPage from '../page/TrendingPage'
 import FavoritePage from '../page/FavoritePage'
 import MyPage from '../page/MyPage'
+import EventTypes from "../util/EventTypes";
 
 /*bottom navigation bar routes content*/
 const TABS = {
@@ -76,7 +76,6 @@ class DynamicTabNavigator extends Component<Props> {
     console.disableYellowBox = true;
   }
 
-
   _tabNavigator() {
     /*avoid theme color change caused regenerate tabs*/
     if (this.Tabs) {
@@ -87,19 +86,25 @@ class DynamicTabNavigator extends Component<Props> {
     /*Dynamic tab bar label name*/
     //PopularPage.navigationOptions.tabBarLabel = 'Latest';
     /*TabBarComponent is used to manage theme color*/
-    return this.Tabs = createBottomTabNavigator(tabs, {
-      tabBarComponent: props => {
-        return <TabBarComponent
-          theme={this.props.state}
-          {...props}
-        />
+    return this.Tabs = createAppContainer(createBottomTabNavigator(tabs, {
+        tabBarComponent: props => {
+          return <TabBarComponent theme={this.props.theme} {...props}/>
+        }
       }
-    })
+    ))
   }
 
   render() {
-    const Tab = createAppContainer(this._tabNavigator());//react-navigation 3 required set up app container
-    return <Tab/>
+    const Tab = this._tabNavigator();//react-navigation 3 required set up app container
+    /*setup event bus to detect onFavorite change to synchronize favorite status in each tab*/
+    return <Tab
+      onNavigationStateChange={(prevState, newState, action) => {
+        EventBus.getInstance().fireEvent(EventTypes.bottom_tab_select, {
+          from: prevState.index,
+          to: newState.index
+        })
+      }}
+    />
   }
 }
 
@@ -113,14 +118,14 @@ class TabBarComponent extends React.Component {
   render() {
     return <BottomTabBar
       {...this.props}
-      activeTintColor={this.props.theme}
+      activeTintColor={this.props.theme.themeColor}
     />
   }
 }
 
 const mapStateToProps = state => ({
   /*state:[store state].[theme reducer].[theme attribute]*/
-  state: state.theme.theme
+  theme: state.theme.theme
 });
 
 /*Redux step3: connect React components and Redux store*/

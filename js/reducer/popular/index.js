@@ -22,7 +22,7 @@ export default function onAction(state = defaultState, action) {
         [action.storeName]: {
           ...state[action.storeName],
           items: action.items,//original data(30 pieces)
-          projectMode: action.projectMode,//each page display data(10 pieces)
+          projectModels: action.projectModels,//each page display data(10 pieces)
           isLoading: false,//is refreshing
           hideLoadingMore: false,
           pageIndex: action.pageIndex
@@ -52,7 +52,7 @@ export default function onAction(state = defaultState, action) {
         /*dynamic storeName*/
         [action.storeName]: {
           ...state[action.storeName],
-          projectMode: action.projectMode,
+          projectModels: action.projectModels,
           hideLoadingMore: false,
           pageIndex: action.pageIndex
         }
@@ -64,6 +64,14 @@ export default function onAction(state = defaultState, action) {
           ...state[action.storeName],
           hideLoadingMore: true,
           pageIndex: action.pageIndex
+        }
+      };
+    case Types.POPULAR_FLUSH_FAVORITE://refresh when favorite change
+      return {
+        ...state,
+        [action.storeName]: {
+          ...state[action.storeName],
+          projectModels: action.projectModels
         }
       };
     default:

@@ -1,7 +1,5 @@
 import {
   createStackNavigator,
-  createMaterialTopTabNavigator,
-  createBottomTabNavigator,
   createSwitchNavigator
 } from 'react-navigation'
 import {connect} from 'react-redux'
@@ -10,13 +8,17 @@ import {createReactNavigationReduxMiddleware, reduxifyNavigator} from 'react-nav
 import WelcomePage from '../page/WelcomePage'
 import HomePage from '../page/HomePage'
 import DetailPage from '../page/DetailPage'
-import FetchDemoPage from '../page/FetchDemoPage'
-import AsyncStorageDemoPage from '../page/AsyncStorageDemoPage'
-import DataStoreDemoPage from '../page/DataStoreDemoPage'
+import WebViewPage from '../page/WebViewPage'
+import AboutPage from '../page/about/AboutPage'
+import AboutMePage from '../page/about/AboutMePage'
+import CustomKeyPage from "../page/CustomKeyPage";
+import SortKeyPage from "../page/SortKeyPage";
+import SearchPage from "../page/SearchPage"
 
-export const rootCom = 'Init'//set default router
 
-/*Initial Navigator*/
+export const rootCom = 'Init';//set default router
+
+/*Initial Navigator, for welcome page*/
 const InitNavigator = createStackNavigator({
   WelcomePage: {
     screen: WelcomePage,
@@ -37,25 +39,43 @@ const MainNavigator = createStackNavigator({
   DetailPage: {
     screen: DetailPage,
     navigationOptions: {
-      //header: null, //baned StackNavigator's Navigation Bar
+      header: null, //baned StackNavigator's Navigation Bar
     }
   },
-  FetchDemoPage: {
-    screen: FetchDemoPage,
+  WebViewPage: {
+    screen: WebViewPage,
     navigationOptions: {
-      //header: null, //baned StackNavigator's Navigation Bar
+      header: null, //baned StackNavigator's Navigation Bar
     }
   },
-  AsyncStorageDemoPage: {
-    screen: AsyncStorageDemoPage,
+  AboutPage: {
+    screen: AboutPage,
     navigationOptions: {
-      //header: null, //baned StackNavigator's Navigation Bar
+      header: null, //baned StackNavigator's Navigation Bar
     }
   },
-  DataStoreDemoPage: {
-    screen: DataStoreDemoPage,
+  AboutMePage: {
+    screen: AboutMePage,
     navigationOptions: {
-      //header: null, //baned StackNavigator's Navigation Bar
+      header: null, //baned StackNavigator's Navigation Bar
+    }
+  },
+  CustomKeyPage: {
+    screen: CustomKeyPage,
+    navigationOptions: {
+      header: null, //baned StackNavigator's Navigation Bar
+    }
+  },
+  SortKeyPage: {
+    screen: SortKeyPage,
+    navigationOptions: {
+      header: null, //baned StackNavigator's Navigation Bar
+    }
+  },
+  SearchPage: {
+    screen: SearchPage,
+    navigationOptions: {
+      header: null, //baned StackNavigator's Navigation Bar
     }
   }
 });

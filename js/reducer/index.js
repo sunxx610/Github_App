@@ -2,11 +2,14 @@ import {combineReducers} from 'redux'
 import theme from './theme'
 import popular from './popular'
 import trending from './trending'
+import favorite from './favorite'
+import language from './language'
+import search from './search'
 import {rootCom, RootNavigator} from "../navigator/AppNavigator";
 
 
 /*set default state*/
-/*nav = {
+/**nav = {
   index: 1,
   isTransitioning: false,
   routes: [
@@ -14,7 +17,7 @@ import {rootCom, RootNavigator} from "../navigator/AppNavigator";
     {key: "Main", isTransitioning: false, index: 0, routes: Array(1), routeName: "Main",}
   ]
 };*/
-const navState = RootNavigator.router.getStateForAction(RootNavigator.router.getActionForPathAndParams(rootCom));
+const navState = RootNavigator.router.getStateForAction(RootNavigator.router.getActionForPathAndParams(rootCom));//rootCom='init'
 
 /*create navigation reducer*/
 const navReducer = (state = navState, action) => {
@@ -28,6 +31,9 @@ const index = combineReducers({
   nav: navReducer,
   theme: theme,
   popular: popular,
-  trending: trending
+  trending: trending,
+  favorite: favorite,
+  language: language,
+  search: search
 });
 export default index;

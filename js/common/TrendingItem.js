@@ -2,54 +2,44 @@ import React, {Component} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import HTMLView from 'react-native-htmlview'
+import BaseItem from "./BaseItem";
 
-export default class TrendingItem extends Component {
+export default class TrendingItem extends BaseItem {
   render() {
-    const {item} = this.props;
+    const {projectModel} = this.props;
+    const {item} = projectModel;
     if (!item) return null;
-    let favoriteButton =
-      <TouchableOpacity
-        style={{padding: 6}}
-        onPress={() => {
-        }}
-        underlayColor={'transparent'}
-      >
-        <FontAwesome
-          name={'star-o'}
-          size={26}
-          style={{color: 'red'}}
-        />
-      </TouchableOpacity>;
-        /*p tag is used to add styles in HTMLView*/
-        let description = '<p>'+item.description+'</p>';
+    /*p tag is used to add styles in HTMLView*/
+    let description = '<p>' + item.description + '</p>';
     return (
       <TouchableOpacity
-        onPress={this.props.onSelect}
+        onPress={()=>this.onItemClick()}
       >
         <View style={styles.cellContainer}>
-          <Text style={styles.title}>{item.fullName}</Text>
+          <Text style={styles.title}>{item.author}/{item.name}</Text>
           {/*display html in trending page*/}
           <HTMLView
-           value={description}
-           onLinkPress={url=>{}}
-           stylesheet={{
-             p:styles.description,
-             a:styles.description
-           }}
+            value={description}
+            onLinkPress={url => {
+            }}
+            stylesheet={{
+              p: styles.description,
+              a: styles.description
+            }}
           />
-          <Text style={styles.description}>{item.meta}</Text>
+          {/*<Text style={styles.description}>{item.meta}</Text>*/}
           <View style={styles.row}>
             <View style={styles.row}>
-              <Text>Contributors: </Text>
-              {item.contributors.map((result, i, arr) => {
+              <Text>Built by: </Text>
+              {item.builtBy.map((result, i) => {
                 return <Image
                   key={i}
                   style={{height: 22, width: 22, margin: 2}}
-                  source={{uri: arr[i]}}
+                  source={{uri: result.avatar}}
                 />
               })}
             </View>
-            {favoriteButton}
+            {this._favoriteIcon()}
           </View>
         </View>
       </TouchableOpacity>

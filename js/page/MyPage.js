@@ -1,101 +1,171 @@
 import React, {Component} from 'react';
-import {Button, Platform, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {Button, Platform, StyleSheet, Text, View, TouchableOpacity, ScrollView} from 'react-native';
 import {createMaterialTopTabNavigator} from 'react-navigation'
 import {createAppContainer} from 'react-navigation'
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {connect} from 'react-redux'
 
-import NavigationUtil from '../navigator/NavigationUtil'
 import NavigationBar from '../common/NavigationBar'
-import {onThemeChange} from "../action/theme";
-
-
-const THEME_COLOR = '#678';
+import actions from "../action";
+import {MORE_MENU} from "../common/MORE_MENU";
+import GlobalStyles from "../res/styles/GlobalStyles";
+import ViewUtil from "../util/ViewUtil";
+import NavigationUtil from "../navigator/NavigationUtil";
+import CustomKeyPage from "./CustomKeyPage";
+import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
 
 type Props = {};
 
 class MyPage extends Component<Props> {
-  getRightButton() {
-    return <View style={{flexDirection: 'row'}}>
-      <TouchableOpacity
-        onPress={() => {
-
-        }}
-      >
-        <View style={{padding: 5, marginRight: 8}}>
-          <Feather
-            name={'search'}
-            size={24}
-            style={{color: 'white'}}
-          />
-        </View>
-      </TouchableOpacity>
-    </View>
+  onClick(menu) {
+    const {theme} = this.props;
+    let RouteName, params = {theme};
+    switch (menu) {
+      case MORE_MENU.Tutorial:
+        RouteName = 'WebViewPage';
+        params.title = 'Tutorial';
+        params.url = 'http://rushisun.com';
+        break;
+      case MORE_MENU.About:
+        RouteName = 'AboutPage';
+        break;
+      case MORE_MENU.Custom_Theme:
+        const {onShowCustomThemeView} = this.props;
+        onShowCustomThemeView(true);
+        break;
+      case MORE_MENU.About_Author:
+        RouteName = 'AboutMePage';
+        break;
+      case MORE_MENU.Custom_Key:
+      case MORE_MENU.Custom_Language:
+      case MORE_MENU.Remove_Key:
+        RouteName = 'CustomKeyPage';
+        params.isRemoveKey = menu === MORE_MENU.Remove_Key;
+        params.flag = menu !== MORE_MENU.Custom_Language ? FLAG_LANGUAGE.flag_key : FLAG_LANGUAGE.flag_language;
+        break;
+      case MORE_MENU.Sort_Key:
+        RouteName = 'SortKeyPage';
+        params.flag = FLAG_LANGUAGE.flag_key;
+        break;
+      case MORE_MENU.Sort_Language:
+        RouteName = 'SortKeyPage';
+        params.flag = FLAG_LANGUAGE.flag_language;
+        break;
+    }
+    if (RouteName) {
+      NavigationUtil.goPage(params, RouteName);
+    }
   }
 
-  getLeftButton(callBack) {
-    return <TouchableOpacity
-      style={{padding: 8, paddingLeft: 12}}
-      onPress={callBack}
-    >
-      <Ionicons
-        name={'ios-arrow-back'}
-        size={26}
-        style={{color: 'white'}}
-      />
-    </TouchableOpacity>
+  getItem(menu) {
+    const {theme} = this.props;
+    return ViewUtil.getMenuItem(() => this.onClick(menu), menu, theme.themeColor);
   }
 
   render() {
+    const {theme} = this.props;
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content'
     };
     let navigationBar = <NavigationBar
       title={'MyPage'}
       statusBar={statusBar}
-      style={{backgroundColor: THEME_COLOR}}
-      rightButton={this.getRightButton()}
-      leftButton={this.getLeftButton()}
+      style={theme.styles.navBar}
     />;
     return (
       /*fit full screen phones*/
-      <View style={styles.container}>
+      <View style={GlobalStyles.root_container}>
         {navigationBar}
-        <Text style={styles.welcome}>MyPage</Text>
+        <ScrollView
+          veritcal
+        >
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => {
+              this.onClick(MORE_MENU.About)
+            }}
+          >
+            <View style={styles.about_left}>
+              <Ionicons
+                name={MORE_MENU.About.icon}
+                size={40}
+                style={{marginRight: 10, color: theme.themeColor}}
+              />
+              <Text>GitHub Popular</Text>
+            </View>
+            <Ionicons
+              name={'ios-arrow-forward'}
+              size={16}
+              style={{marginRight: 10, alignSelf: 'center', color: theme.themeColor}}
+            />
+          </TouchableOpacity>
+          <View style={GlobalStyles.line}></View>
+          {this.getItem(MORE_MENU.Tutorial)}
+          {/*Trending management*/}
+          <Text style={styles.groupTitle}>Trending management</Text>
+          {/*Custom language*/}
+          {this.getItem(MORE_MENU.Custom_Language)}
+          <View style={GlobalStyles.line}></View>
+          {/*Language sort*/}
+          {this.getItem(MORE_MENU.Sort_Language)}
+
+          {/*Popular management*/}
+          <Text style={styles.groupTitle}>Popular Management</Text>
+          {/*Custom tab*/}
+          {this.getItem(MORE_MENU.Custom_Key)}
+          <View style={GlobalStyles.line}></View>
+          {/*Custom tab sort*/}
+          {this.getItem(MORE_MENU.Sort_Key)}
+          <View style={GlobalStyles.line}></View>
+          {/*Custom tab remove*/}
+          {this.getItem(MORE_MENU.Remove_Key)}
+
+          {/*Setting*/}
+          <Text style={styles.groupTitle}>Setting</Text>
+          {/*Custom theme*/}
+          {this.getItem(MORE_MENU.Custom_Theme)}
+          <View style={GlobalStyles.line}></View>
+          {/*About author*/}
+          {this.getItem(MORE_MENU.About_Author)}
+          <View style={GlobalStyles.line}></View>
+          {/*Feedback*/}
+          {this.getItem(MORE_MENU.Feedback)}
+        </ScrollView>
       </View>
     );
 
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  theme: state.theme.theme
+});
 const mapDispatchToProps = dispatch => ({
-  onThemeChange: (theme) => dispatch(onThemeChange(theme))
+  onShowCustomThemeView: (show) => dispatch(actions.onShowCustomThemeView(show))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(MyPage);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  item: {
+    backgroundColor: 'white',
+    padding: 10,
+    height: 90,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row'
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  about_left: {
+    alignItems: 'center',
+    flexDirection: 'row'
   },
-  tabStyle: {
-    minWidth: 50
-  },
-  indicatorStyle: {
-    height: 2,
-    backgroundColor: 'white'
-  },
-  labelStyle: {
-    fontSize: 13,
-    marginTop: 6,
-    marginBottom: 6
+  groupTitle: {
+    marginLeft: 20,
+    marginTop: 10,
+    marginBottom: 5,
+    fontSize: 12,
+    color: 'gray'
   }
 });
 

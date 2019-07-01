@@ -1,6 +1,6 @@
 /*Global navigation jump tool class*/
 export default class NavigationUtil {
-  /*Go to specific page
+  /**Go to specific page
   * @params params:params
   * @params page: which page to go
   * */
@@ -13,17 +13,20 @@ export default class NavigationUtil {
     }
     navigation.navigate(
       page,
+      {
+        ...params
+      }
     );
   }
 
-  /*Return to previous page
+  /**Return to previous page
   * @params navigation
   * */
   static goBack(navigation) {
     navigation.goBack();
   }
 
-  /*Reset to Home Page
+  /**Reset to Home Page
   * @params params
   * */
   static resetToHomePage(params) {

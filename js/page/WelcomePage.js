@@ -9,7 +9,7 @@ export default class WelcomePage extends Component<Props> {
   componentDidMount() {
     this.timer = setTimeout(() => {
       NavigationUtil.resetToHomePage({navigation: this.props.navigation});
-    }, 500);
+    }, 50);
   }
 
   /*clear timer: in case of window closed before timer is used*/

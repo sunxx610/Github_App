@@ -1,32 +1,34 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import {createBottomTabNavigator} from 'react-navigation'
-import {createAppContainer} from 'react-navigation'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import {BackHandler} from 'react-native'
-import {NavigationActions} from 'react-navigation'
-
-import PopularPage from './PopularPage'
-import TrendingPage from './TrendingPage'
-import FavoritePage from './FavoritePage'
-import MyPage from './MyPage'
-import NavigationUtil from "../navigator/NavigationUtil"
-import DynamicTabNavigator from '../navigator/DynamicTabNavigator'
-import actions from "../action";
+import {View} from 'react-native';
+import {NavigationActions} from 'react-navigation';
+import NavigationUtil from "../navigator/NavigationUtil";
+import DynamicTabNavigator from '../navigator/DynamicTabNavigator';
 import {connect} from "react-redux";
+
+import BackPressComponent from "../common/BackPressComponent";
+import CustomTheme from "./CustomTheme";
+import actions from "../action";
+import ThemeDao from "../expand/dao/ThemeDao";
 
 type Props = {};
 
 class HomePage extends Component<Props> {
-  /*Android physical back button*/
-  componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+  constructor(props) {
+    super(props);
+    this.backPress = new BackPressComponent({backPress: this.onBackPress()})
   }
 
-  /*Android physical back button*/
+  /*Android hardware back button*/
+
+  /*add BackHandler listener */
+  componentDidMount() {
+    /*console.log('homepage props', this.props)*/
+    this.backPress.componentDidMount();
+  }
+
+  /*remove BackHandler listener */
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    this.backPress.componentWillUnmount();
   }
 
   /*Android physical back button
@@ -44,16 +46,32 @@ class HomePage extends Component<Props> {
     return true
   };
 
+  renderCustomThemeView() {
+    const {customThemeViewVisible, onShowCustomThemeView} = this.props;
+    return (<CustomTheme
+      visible={customThemeViewVisible}
+      {...this.props}
+      onClose={() => onShowCustomThemeView(false)}
+    />)
+  }
+
   render() {
     /*children level navigator can't jump to parent level page, so save navigation in NavigationUtil to pass to children navigator*/
     NavigationUtil.navigation = this.props.navigation;
-    return <DynamicTabNavigator/>
-  }
+    return <View style={{flex: 1}}>
+      <DynamicTabNavigator/>
+      {this.renderCustomThemeView()}
+    </View>
+  }1
 }
 
 const mapStateToProps = state => ({
-  nav: state.nav
+  nav: state.nav,
+  customThemeViewVisible: state.theme.customThemeViewVisible,
+});
+const mapDispatchToProps = dispatch => ({
+  onShowCustomThemeView: (show) => dispatch(actions.onShowCustomThemeView(show))
 });
 
 
-export default connect(mapStateToProps)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
