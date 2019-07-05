@@ -15,5 +15,5 @@ export const MORE_MENU = {
   Tutorial: {name: 'Tutorial', Icons: Ionicons, icon: 'ios-bookmarks'},
   Feedback: {name: 'Feedback', Icons: MaterialIcons, icon: 'feedback'},
   Share: {name: 'Share', Icons: Ionicons, icon: 'md-share'},
-  CodePush: {name: 'CodePush', Icons: Ionicons, icon: 'ios-planet'},
+  CodePush: {name: 'Update', Icons: Ionicons, icon: 'ios-planet'},
 };

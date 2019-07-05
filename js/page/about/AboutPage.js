@@ -7,6 +7,7 @@ import NavigationUtil from "../../navigator/NavigationUtil";
 import AboutCommon, {FLAG_ABOUT} from "./AboutCommon";
 import config from "../../res/data/config"
 import GlobalStyles from "../../res/styles/GlobalStyles";
+import BackPressComponent from "../../common/BackPressComponent";
 
 type Props = {};
 
@@ -22,17 +23,28 @@ export default class AboutPage extends Component<Props> {
     this.state = {
       data: config,
     };
+    this.backPress = new BackPressComponent({backPress: () => this.onBackPress()});
   };
+  /*Android hardware back button*/
 
+  /*add BackHandler listener */
+  componentDidMount() {
+    this.backPress.componentDidMount();
+  }
+
+  /*remove BackHandler listener */
+  componentWillUnmount() {
+    this.backPress.componentWillUnmount();
+  }
+
+  onBackPress() {
+    NavigationUtil.goBack(this.props.navigation);
+    return true;
+  };
   onClick(menu) {
     const {theme} = this.params;
     let RouteName, params = {theme};
     switch (menu) {
-      case MORE_MENU.Tutorial:
-        RouteName = 'WebViewPage';
-        params.title = 'Tutorial';
-        params.url = 'http://rushisun.com';
-        break;
       case MORE_MENU.Feedback:
         /*feedback target email*/
         const url = 'mailto://sunxx610@gmail.com';
@@ -67,8 +79,6 @@ export default class AboutPage extends Component<Props> {
 
   render() {
     const content = <View>
-      {this.getItem(MORE_MENU.Tutorial)}
-      <View style={GlobalStyles.line}/>
       {this.getItem(MORE_MENU.About_Author)}
       <View style={GlobalStyles.line}/>
       {this.getItem(MORE_MENU.Feedback)}

@@ -14,6 +14,8 @@ import AboutMePage from '../page/about/AboutMePage'
 import CustomKeyPage from "../page/CustomKeyPage";
 import SortKeyPage from "../page/SortKeyPage";
 import SearchPage from "../page/SearchPage"
+import CodePushPage from '../page/CodePushPage';
+
 
 
 export const rootCom = 'Init';//set default router
@@ -77,6 +79,16 @@ const MainNavigator = createStackNavigator({
     navigationOptions: {
       header: null, //baned StackNavigator's Navigation Bar
     }
+  },
+  CodePushPage: {
+    screen: CodePushPage,
+    navigationOptions: {
+      header: null,// baned StackNavigator's Navigation Bar
+    }
+  }
+}, {
+  defaultNavigationOptions: {
+    header: null,// baned StackNavigator's Navigation Bar
   }
 });
 

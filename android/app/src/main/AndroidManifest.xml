@@ -21,6 +21,11 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+      <!--fix full screen-->
+      <meta-data
+          android:name="android.max_aspect"
+          android:value="2.2"
+      />
     </application>
 
 </manifest>

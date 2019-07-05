@@ -6,6 +6,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressComponent from "../common/BackPressComponent";
 import FavoriteDao from "../expand/dao/FavoriteDao";
+import SafeAreaViewPlus from "../common/SafeAreaViewPlus";
+import ShareUtil from "../util/ShareUtil";
 
 const TRENDING_URL = 'https://github.com';
 type Props = {};
@@ -74,6 +76,7 @@ export default class DetailPage extends Component<Props> {
     }
   }
 
+
   renderRightButton() {
     return (
       <View style={{flexDirection: 'row'}}>
@@ -86,9 +89,7 @@ export default class DetailPage extends Component<Props> {
             style={{color: 'white', marginRight: 10}}
           />
         </TouchableOpacity>
-        {ViewUtil.getShareButton(() => {
-
-        })}
+        {ViewUtil.getShareButton(() => this.shareUtil.onOpen())}
       </View>
     )
   }
@@ -115,7 +116,9 @@ export default class DetailPage extends Component<Props> {
       rightButton={this.renderRightButton()}
     />;
     return (
-      <View style={styles.container}>
+      <SafeAreaViewPlus
+        topColor={theme.themeColor}
+      >
         {navigationBar}
         <WebView
           ref={webView => this.webView = webView}
@@ -123,14 +126,10 @@ export default class DetailPage extends Component<Props> {
           onNavigationStateChange={e => this.onNavigationStateChange(e)}
           source={{uri: this.state.url}}
         />
-      </View>
+        <ShareUtil
+          ref={shareUtil => this.shareUtil = shareUtil}
+        />
+      </SafeAreaViewPlus>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0
-  },
-});

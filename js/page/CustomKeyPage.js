@@ -12,11 +12,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import NavigationUtil from '../navigator/NavigationUtil'
 import actions from '../action/index'
 import NavigationBar from '../common/NavigationBar'
-import {FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
 import BackPressComponent from "../common/BackPressComponent";
-import LanguageDao from "../expand/dao/LanguageDao";
+import LanguageDao,{FLAG_LANGUAGE} from "../expand/dao/LanguageDao";
 import ViewUtil from "../util/ViewUtil";
 import ArrayUtil from "../util/ArrayUtil";
+import SafeAreaViewPlus from "../common/SafeAreaViewPlus";
 
 type Props = {};
 
@@ -195,12 +195,15 @@ class CustomKeyPage extends Component<Props> {
       leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
       rightButton={ViewUtil.getRightButton(rightButtonTitle, () => this.onSave())}
     />;
-    return <View style={styles.container}>
+    return <SafeAreaViewPlus
+      style={styles.container}
+      topColor={theme.themeColor}
+    >
       {navigationBar}
       <ScrollView>
         {this.renderView()}
       </ScrollView>
-    </View>
+    </SafeAreaViewPlus>
   }
 }
 

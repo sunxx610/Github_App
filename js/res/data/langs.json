@@ -1,8 +1,13 @@
 [
   {
-    "path": "",
-    "name": "All",
-    "short_name": "All",
+    "path": "java",
+    "name": "Java",
+    "checked": true
+  },
+  {
+    "path": "javascript",
+    "short_name": "JS",
+    "name": "JavaScript",
     "checked": true
   },
   {
@@ -146,17 +151,6 @@
     "short_name": "Inno",
     "name": "Inno Setup",
     "checked": false
-  },
-  {
-    "path": "java",
-    "name": "Java",
-    "checked": true
-  },
-  {
-    "path": "javascript",
-    "short_name": "JS",
-    "name": "JavaScript",
-    "checked": true
   },
   {
     "path": "julia",

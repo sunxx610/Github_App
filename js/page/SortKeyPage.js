@@ -7,8 +7,6 @@ import {
   TouchableHighlight
 } from 'react-native';
 import {connect} from 'react-redux'
-import CheckBox from 'react-native-check-box'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import SortableListView from 'react-native-sortable-listview'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -42,7 +40,7 @@ class SortKeyPage extends Component<Props> {
     const checkedArray = SortKeyPage._keys(nextProps, null, prevState);
     if (prevState.keys !== checkedArray) {
       return {
-        keys: checkedArray
+        checkedArray: checkedArray
       }
     }
     return null;
@@ -53,7 +51,7 @@ class SortKeyPage extends Component<Props> {
   /*add BackHandler listener */
   componentDidMount() {
     this.backPress.componentDidMount();
-
+    //if tabs in props is empty, load tabs from local storage
     if (SortKeyPage._keys(this.props).length === 0) {
       let {onLoadLanguage} = this.props;
       onLoadLanguage(this.params.flag);
@@ -73,12 +71,13 @@ class SortKeyPage extends Component<Props> {
    * @private
    * */
   static _keys(props, state) {
+    console.log('props', props, 'state', state)
     //if checkedArray existed in state, return checkedArray
     if (state && state.checkedArray && state.checkedArray.length) {
       return state.checkedArray;
     }
     //else get checkedArray from original data
-    const flag = SortKeyPage._flag(props);
+    const flag = SortKeyPage._flag(props);//language_dao_language||language_dao_key
     //all data
     let dataArray = props.language[flag] || [];
     //data checked
@@ -101,6 +100,7 @@ class SortKeyPage extends Component<Props> {
   }
 
   onSave(hasChecked) {
+    console.log('IS equal',SortKeyPage._keys(this.props),this.state.checkedArray)
     if (!hasChecked) {
       //return if didn't change the sort
       if (ArrayUtil.isEqual(SortKeyPage._keys(this.props), this.state.checkedArray)) {
@@ -120,7 +120,7 @@ class SortKeyPage extends Component<Props> {
   }
 
   /**
-   * Get reordered tabs
+   * Get resorted tabs
    * sortResultArray: sorted result array
    * originalCheckedArray: unsorted checked array
    * this.state.checkedArray: sorted checked array
@@ -175,20 +175,20 @@ class SortKeyPage extends Component<Props> {
       rightButton={ViewUtil.getRightButton('Save', () => this.onSave())}
     />;
     return <SafeAreaViewPlus
-        style={GlobalStyles.root_container}
-        topColor={theme.themeColor}
-      >
-        {navigationBar}
+      style={GlobalStyles.root_container}
+      topColor={theme.themeColor}
+    >
+      {navigationBar}
       <SortableListView
         data={this.state.checkedArray}
         order={Object.keys(this.state.checkedArray)}
         onRowMoved={e => {
-          this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0])
+          this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0]);
           this.forceUpdate()
         }}
         renderRow={row => <SortCell data={row} {...this.params}/>}
       />
-      </SafeAreaViewPlus>
+    </SafeAreaViewPlus>
   }
 }
 

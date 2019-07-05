@@ -8,7 +8,7 @@ import {connect} from "react-redux";
 import BackPressComponent from "../common/BackPressComponent";
 import CustomTheme from "./CustomTheme";
 import actions from "../action";
-import ThemeDao from "../expand/dao/ThemeDao";
+import SafeAreaViewPlus from '../common/SafeAreaViewPlus';
 
 type Props = {};
 
@@ -56,18 +56,24 @@ class HomePage extends Component<Props> {
   }
 
   render() {
+    const {theme} = this.props;
     /*children level navigator can't jump to parent level page, so save navigation in NavigationUtil to pass to children navigator*/
     NavigationUtil.navigation = this.props.navigation;
-    return <View style={{flex: 1}}>
+    return <SafeAreaViewPlus
+    topColor={theme.themeColor}
+    >
       <DynamicTabNavigator/>
       {this.renderCustomThemeView()}
-    </View>
-  }1
+    </SafeAreaViewPlus>
+  }
+
+  1
 }
 
 const mapStateToProps = state => ({
   nav: state.nav,
   customThemeViewVisible: state.theme.customThemeViewVisible,
+  theme: state.theme.theme
 });
 const mapDispatchToProps = dispatch => ({
   onShowCustomThemeView: (show) => dispatch(actions.onShowCustomThemeView(show))

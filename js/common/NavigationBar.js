@@ -1,10 +1,13 @@
 import React, {Component} from 'react'
-import {ViewPropTypes, Text, StatusBar, StyleSheet, View, Platform} from 'react-native'
+import {ViewPropTypes, Text, StatusBar, StyleSheet, View, Platform,DeviceInfo} from 'react-native'
 import {PropTypes} from 'prop-types'
 
 const NAV_BAR_HEIGHT_IOS = 44;//ios nav bar height
 const NAV_BAR_HEIGHT_ANDROID = 50;//android nav bar height
-const STATUS_BAR_HEIGHT_IOS = 20;//ios status bar height. android has default height
+const STATUS_BAR_HEIGHT = DeviceInfo.isIphoneX_deprecated ? 0 : 20;//status bar height
+
+
+20;//ios status bar height. android has default height
 const StatusBarShape = {//set status bar's attribute
   barStyle: PropTypes.oneOf(['light-content', 'default']),
   hidden: PropTypes.bool,
@@ -68,7 +71,8 @@ export default class NavigationBar extends Component {
 
 const styles = StyleSheet.create({
     container: {
-      backgroundColor: '#2196f3'
+      backgroundColor: '#2196f3',
+      zIndex:2
     },
     navBar: {
       flexDirection: 'row',
@@ -93,7 +97,7 @@ const styles = StyleSheet.create({
       color: 'white'
     },
     statusBar: {
-      height: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT_IOS : 0
+      height: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 0
     }
   })
 ;

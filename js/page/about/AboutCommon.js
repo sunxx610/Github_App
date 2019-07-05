@@ -6,39 +6,24 @@ import {View, Text, Platform, Image, Dimensions, StyleSheet, DeviceInfo} from 'r
 import config from '../../res/data/config'
 import GlobalStyles from "../../res/styles/GlobalStyles";
 import ViewUtil from "../../util/ViewUtil";
+import ShareUtil from "../../util/ShareUtil";
 
-const THEME_COLOR = '#678';
 const AVATAR_SIZE = 90;
 const PARALLAX_HEADER_HEIGHT = 270;
-const STICKY_HEADER_HEIGHT = (Platform.OS === 'ios') ? GlobalStyles.nav_bar_height_ios + 20 : GlobalStyles.nav_bar_height_android;
-const window = Dimensions.get('window');
 const TOP = (Platform.OS === 'ios') ? 20 + (DeviceInfo.isIPhoneX_deprecated ? 24 : 0) : 0;
-
+const STICKY_HEADER_HEIGHT = (Platform.OS === 'ios') ? GlobalStyles.nav_bar_height_ios + TOP : GlobalStyles.nav_bar_height_android;
+const window = Dimensions.get('window');
 export const FLAG_ABOUT = {flag_about: 'about', flag_about_me: 'about_me'};
 
 export default class AboutCommon {
   constructor(props, updateState) {
     this.props = props;
     this.updateState = updateState;
-    this.backPress = new BackPressComponent({backPress: () => this.onBackPress()});
     this.updateState({config})
   }
 
-  onBackPress() {
-    NavigationUtil.goBack(this.props.navigation);
-    return true;
-  };
-
-  componentDidMount() {
-    this.backPress.componentDidMount();
-  }
-
-  componentWillUnmount() {
-    this.backPress.componentWillUnmount();
-  }
-
   onShare() {
-
+    this.shareUtil.onOpen()
   }
 
   getParallaxRenderConfig(params) {
@@ -96,19 +81,25 @@ export default class AboutCommon {
   }
 
   render(contentView, params) {
-    const {theme}=this.props;
+    const {theme} = this.props;
     const renderConfig = this.getParallaxRenderConfig(params);
     return (
-      <ParallaxScrollView
-        backgroundColor={theme.themeColor}
-        contentBackgroundColor={GlobalStyles.backgroundColor}
-        parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
-        stickyHeaderHeight={STICKY_HEADER_HEIGHT}
-        backgroundScrollSpeed={10}
-        {...renderConfig}
-      >
-        {contentView}
-      </ParallaxScrollView>
+      <View style={{flex:1}}>
+        <ParallaxScrollView
+          backgroundColor={theme.themeColor}
+          contentBackgroundColor={GlobalStyles.backgroundColor}
+          parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
+          stickyHeaderHeight={STICKY_HEADER_HEIGHT}
+          backgroundScrollSpeed={10}
+          {...renderConfig}
+        >
+          {contentView}
+        </ParallaxScrollView>
+        <ShareUtil
+          ref={shareUtil => this.shareUtil = shareUtil}
+        />
+      </View>
+
     )
   }
 }

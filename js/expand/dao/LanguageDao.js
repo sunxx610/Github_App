@@ -1,4 +1,4 @@
-import {AsyncStorage} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
 
 import langs from '../../res/data/langs'
 import keys from '../../res/data/keys'

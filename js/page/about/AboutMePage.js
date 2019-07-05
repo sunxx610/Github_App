@@ -9,6 +9,7 @@ import NavigationUtil from "../../navigator/NavigationUtil";
 import AboutCommon, {FLAG_ABOUT} from "./AboutCommon";
 import config from "../../res/data/config"
 import GlobalStyles from "../../res/styles/GlobalStyles";
+import BackPressComponent from "../../common/BackPressComponent";
 
 type Props = {};
 
@@ -23,16 +24,33 @@ export default class AboutMePage extends Component<Props> {
     }, data => this.setState({...data}));
     this.state = {
       data: config,
-      showTutorial: true,
+      showProjects: true,
       showBlog: false,
       showQQ: false,
-      showContact: false
+      showContact: false,
     };
+    this.backPress = new BackPressComponent({backPress: () => this.onBackPress()});
+  };
+  /*Android hardware back button*/
+
+  /*add BackHandler listener */
+  componentDidMount() {
+    this.backPress.componentDidMount();
+  }
+
+  /*remove BackHandler listener */
+  componentWillUnmount() {
+    this.backPress.componentWillUnmount();
+  }
+
+  onBackPress() {
+    NavigationUtil.goBack(this.props.navigation);
+    return true;
   };
 
   onClick(tab) {
     if (!tab) return;
-    const {theme}=this.params;
+    const {theme} = this.params;
     if (tab.url) {
       NavigationUtil.goPage({
         theme,
@@ -43,17 +61,14 @@ export default class AboutMePage extends Component<Props> {
     }
     if (tab.account && tab.account.indexOf('@') > -1) {
       let url = 'mailto://' + tab.account;
-      Linking.canOpenURL(url)
-        .then(supported => {
-          if (!supported) {
-            console.log('Cam\'t handle url: ' + url);
-          } else {
-            return Linking.openURL(url);
-          }
-        })
-        .catch(e => {
-          console.error('An error occurred: ', e)
-        });
+      Linking.canOpenURL(url).then(supported => {
+        if (!supported) {
+          console.log('Can\'t handle url: ' + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      }).catch(err => console.error('An error occurred', err));
+      return;
     }
     if (tab.account) {
       Clipboard.setString(tab.account);
@@ -93,27 +108,23 @@ export default class AboutMePage extends Component<Props> {
 
   render() {
     const content = <View>
-      {this._item(this.state.data.aboutMe.Tutorial, this.state.showTutorial, 'showTutorial')}
+      {this._item(this.state.data.aboutMe.Projects, this.state.showProjects, 'showProjects')}
       <View style={GlobalStyles.line}/>
-      {this.state.showTutorial ? this.renderItems(this.state.data.aboutMe.Tutorial.items) : null}
+      {this.state.showProjects ? this.renderItems(this.state.data.aboutMe.Projects.items) : null}
 
       {this._item(this.state.data.aboutMe.Blog, this.state.showBlog, 'showBlog')}
       <View style={GlobalStyles.line}/>
       {this.state.showBlog ? this.renderItems(this.state.data.aboutMe.Blog.items) : null}
-
-      {this._item(this.state.data.aboutMe.QQ, this.state.showQQ, 'showQQ')}
-      <View style={GlobalStyles.line}/>
-      {this.state.showQQ ? this.renderItems(this.state.data.aboutMe.QQ.items, true) : null}
 
       {this._item(this.state.data.aboutMe.Contact, this.state.showContact, 'showContact')}
       <View style={GlobalStyles.line}/>
       {this.state.showContact ? this.renderItems(this.state.data.aboutMe.Contact.items, true) : null}
     </View>;
     return (
-      <View style={{flex:1}}>
+      <View style={{flex: 1}}>
         {this.aboutCommon.render(content, this.state.data.author)}
         <Toast
-          ref={toast=>this.toast=toast}
+          ref={toast => this.toast = toast}
           position={'center'}
         />
       </View>

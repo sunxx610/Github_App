@@ -1,15 +1,18 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
 import NavigationUtil from '../navigator/NavigationUtil'
-
+import actions from "../action";
+import {connect} from "react-redux";
+import SplashScreen from 'react-native-splash-screen';
 
 type Props = {};
-export default class WelcomePage extends Component<Props> {
+class WelcomePage extends Component<Props> {
   /*Jump from WelcomePage to HomePage*/
   componentDidMount() {
+    this.props.onThemeInit();
     this.timer = setTimeout(() => {
+      SplashScreen.hide();
       NavigationUtil.resetToHomePage({navigation: this.props.navigation});
-    }, 50);
+    }, 500);
   }
 
   /*clear timer: in case of window closed before timer is used*/
@@ -18,24 +21,12 @@ export default class WelcomePage extends Component<Props> {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>WelcomePage</Text>
-      </View>
-    );
+    return null;
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  }
+const mapDispatchToProps = dispatch => ({
+  onThemeInit: () => dispatch(actions.onThemeInit()),
 });
+
+export default connect(null, mapDispatchToProps)(WelcomePage);

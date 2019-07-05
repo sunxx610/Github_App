@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
 import {Button, Platform, StyleSheet, Text, View, TouchableOpacity, ScrollView} from 'react-native';
-import {createMaterialTopTabNavigator} from 'react-navigation'
-import {createAppContainer} from 'react-navigation'
-import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {connect} from 'react-redux'
 
@@ -22,11 +19,6 @@ class MyPage extends Component<Props> {
     const {theme} = this.props;
     let RouteName, params = {theme};
     switch (menu) {
-      case MORE_MENU.Tutorial:
-        RouteName = 'WebViewPage';
-        params.title = 'Tutorial';
-        params.url = 'http://rushisun.com';
-        break;
       case MORE_MENU.About:
         RouteName = 'AboutPage';
         break;
@@ -51,6 +43,9 @@ class MyPage extends Component<Props> {
       case MORE_MENU.Sort_Language:
         RouteName = 'SortKeyPage';
         params.flag = FLAG_LANGUAGE.flag_language;
+        break;
+      case MORE_MENU.CodePush:
+        RouteName = 'CodePushPage';
         break;
     }
     if (RouteName) {
@@ -101,8 +96,6 @@ class MyPage extends Component<Props> {
               style={{marginRight: 10, alignSelf: 'center', color: theme.themeColor}}
             />
           </TouchableOpacity>
-          <View style={GlobalStyles.line}></View>
-          {this.getItem(MORE_MENU.Tutorial)}
           {/*Trending management*/}
           <Text style={styles.groupTitle}>Trending management</Text>
           {/*Custom language*/}
@@ -132,6 +125,9 @@ class MyPage extends Component<Props> {
           <View style={GlobalStyles.line}></View>
           {/*Feedback*/}
           {this.getItem(MORE_MENU.Feedback)}
+          <View style={GlobalStyles.line}/>
+          {/*Update*/}
+          {this.getItem(MORE_MENU.CodePush)}
         </ScrollView>
       </View>
     );

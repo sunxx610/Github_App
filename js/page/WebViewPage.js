@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import {WebView, StyleSheet, TouchableOpacity, View, DeviceInfo} from 'react-native';
+import {WebView, StyleSheet, DeviceInfo} from 'react-native';
 import NavigationBar from '../common/NavigationBar'
 import ViewUtil from "../util/ViewUtil";
 import NavigationUtil from "../navigator/NavigationUtil";
 import BackPressComponent from "../common/BackPressComponent";
+import SafeAreaViewPlus from "../common/SafeAreaViewPlus";
+import GlobalStyles from "../res/styles/GlobalStyles";
 
 type Props = {};
 export default class WebViewPage extends Component<Props> {
@@ -66,7 +68,10 @@ export default class WebViewPage extends Component<Props> {
       style={theme.styles.navBar}
     />;
     return (
-      <View style={styles.container}>
+      <SafeAreaViewPlus
+        style={GlobalStyles.root_container}
+        topColor={theme.themeColor}
+      >
         {navigationBar}
         <WebView
           ref={webView => this.webView = webView}
@@ -74,7 +79,7 @@ export default class WebViewPage extends Component<Props> {
           onNavigationStateChange={e => this.onNavigationStateChange(e)}
           source={{uri: this.state.url}}
         />
-      </View>
+      </SafeAreaViewPlus>
     );
   }
 }
